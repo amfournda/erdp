@@ -1,4 +1,10 @@
 #include <gtk/gtk.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <limits.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 int main(int argc, char *argv[]) {
 	GtkBuilder *builder;
@@ -6,10 +12,22 @@ int main(int argc, char *argv[]) {
 	GtkWidget *erdp;
 	GError *error = NULL;
 
+	/*find where my executable is*/
+	char path[PATH_MAX];
+	size_t len;
+	pid_t pid = getpid();
+	sprintf(path, "/proc/%d/exe", pid);
+	if (readlink(path, path, PATH_MAX) == -1)
+		perror("readlink");
+	len = strlen(path);
+	path[len-11] = '\0';
+	char *gladefile = malloc(strlen(path)+strlen("erdp.glade"));
+	gladefile = g_strconcat(path, "erdp.glade", NULL);
+
 	/*get all the objects we need*/
 	gtk_init(&argc,&argv);
 	builder = gtk_builder_new();
-	gtk_builder_add_from_file(builder, "erdp.glade", &error);
+	gtk_builder_add_from_file(builder, gladefile, &error);
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	erdp = GTK_WIDGET(gtk_builder_get_object(builder, "erdp"));
 	

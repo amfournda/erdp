@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
 	if (readlink(path, path, PATH_MAX) == -1)
 		perror("readlink");
 	/*this is bad and hacky and I should feel bad*/
-	len = strlen(path) - 6;
+	len = strlen(path) - 5;
 	printf("Gladefile Path: %s\n", path);
 	int i=0;
 	for(i=len;path[i] != '/';i--);

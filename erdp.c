@@ -1,10 +1,4 @@
-#include <gtk/gtk.h>
-#include <unistd.h>
-#include <sys/stat.h>
-#include <limits.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "erdp.h"
 
 int main(int argc, char *argv[]) {
 	GtkBuilder *builder;
@@ -23,12 +17,8 @@ int main(int argc, char *argv[]) {
 	/*this is bad and hacky and I should feel bad*/
 	len = strlen(path);
 	printf("Gladefile Path: %s\n", path);
-	end = strrchr(path, '/');
-	*end = '\0';
-	end = strrchr(path, '/');
-	*end = '\0';
-	end = strrchr(path, '/');
-	*end = '\0';
+	for(;strncmp("/erdpoc/", &path[len], strlen("/erdpoc/")) != 0;len--){};
+	path[len] = '\0';
 	char *gladefile = malloc(strlen(path)+strlen("/erdp.glade"));
 	gladefile = g_strconcat(path, "/erdp.glade", NULL);
 	printf("Gladefile Path: %s\n", gladefile);

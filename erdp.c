@@ -14,19 +14,23 @@ int main(int argc, char *argv[]) {
 
 	/*find where my executable is*/
 	char path[PATH_MAX];
+	char *end;
 	size_t len;
 	pid_t pid = getpid();
 	sprintf(path, "/proc/%d/exe", pid);
 	if (readlink(path, path, PATH_MAX) == -1)
 		perror("readlink");
 	/*this is bad and hacky and I should feel bad*/
-	len = strlen(path) - 5;
+	len = strlen(path);
 	printf("Gladefile Path: %s\n", path);
-	int i=0;
-	for(i=len;path[i] != '/';i--);
-	path[i+1] = '\0';
-	char *gladefile = malloc(strlen(path)+strlen("erdp.glade"));
-	gladefile = g_strconcat(path, "erdp.glade", NULL);
+	end = strrchr(path, '/');
+	*end = '\0';
+	end = strrchr(path, '/');
+	*end = '\0';
+	end = strrchr(path, '/');
+	*end = '\0';
+	char *gladefile = malloc(strlen(path)+strlen("/erdp.glade"));
+	gladefile = g_strconcat(path, "/erdp.glade", NULL);
 	printf("Gladefile Path: %s\n", gladefile);
 
 	/*get all the objects we need*/

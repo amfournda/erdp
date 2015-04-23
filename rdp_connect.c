@@ -16,18 +16,24 @@ void rdp_connect(GtkButton *connect, gpointer erdp) {
 	fpass = g_strconcat("/p:", gtk_entry_get_text(rpass), NULL);
 	
 	/*check what options to add to rdp*/
-	char *opts = malloc(strlen("/cert-ignore ")+1);
-	opts = g_strconcat("/cert-ignore ", NULL);
+	char *opts[] = {"/usr/bin/xfreerdp","/cert-ignore", fip, fuser, fpass, NULL};
+	int len=5;
 	if(gtk_toggle_button_get_active((GtkToggleButton*)fullscreen) == TRUE) {
-		opts = realloc(opts, strlen("/workarea ")+strlen(opts)+1);
-		opts = g_strconcat(opts, "/workarea ", NULL);
+		opts[len] = realloc(opts[len], sizeof("/f"));
+		opts[len] = "/f";
+		len++;
+		opts[len] = malloc(sizeof(NULL));
+		opts[len] = NULL;
 	}
-	int len = strlen(opts);
-	opts[len-1] = '\0';
 
 	/*and call xfreerdp*/
-	g_printf("Calling xfreerdp with arguments: %s %s %s %s\n", opts, fip, fuser, fpass);
-	execl("/usr/bin/xfreerdp", opts , fip, fuser, fpass, NULL);
+	int i;
+	printf("Calling: ");
+	for(i=0;opts[i] != NULL;i++) {
+		printf("%s ", opts[i]);
+	}
+	printf("\n");
+	execv("/usr/bin/xfreerdp", opts);
 	/*code never gets here*/
 	return;
 }

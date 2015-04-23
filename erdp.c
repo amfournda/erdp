@@ -15,9 +15,11 @@ int main(int argc, char *argv[]) {
 	if (readlink(path, path, PATH_MAX) == -1)
 		perror("readlink");
 	/*this is bad and hacky and I should feel bad*/
-	len = strlen(path);
-	printf("Gladefile Path: %s\n", path);
-	for(;strncmp("/erdpoc/", &path[len], strlen("/erdpoc/")) != 0;len--){};
+	len = strlen(path) - strlen("/erdp\0");
+	printf("Executable Path: %s\n", path);
+	for(;strncmp("/erdp\0", &path[len], strlen("/erdp\0")) != 0;len--){
+		path[len+ strlen("/erdp\0")] = '\0';
+	};
 	path[len] = '\0';
 	char *gladefile = malloc(strlen(path)+strlen("/erdp.glade"));
 	gladefile = g_strconcat(path, "/erdp.glade", NULL);

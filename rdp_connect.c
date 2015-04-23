@@ -19,8 +19,8 @@ void rdp_connect(GtkButton *connect, gpointer erdp) {
 	char *opts = malloc(strlen("/cert-ignore ")+1);
 	opts = g_strconcat("/cert-ignore ", NULL);
 	if(gtk_toggle_button_get_active((GtkToggleButton*)fullscreen) == TRUE) {
-		opts = realloc(opts, strlen("/f ")+strlen(opts)+1);
-		opts = g_strconcat(opts, "/f ", NULL);
+		opts = realloc(opts, strlen("/workarea ")+strlen(opts)+1);
+		opts = g_strconcat(opts, "/workarea ", NULL);
 	}
 	int len = strlen(opts);
 	opts[len-1] = '\0';

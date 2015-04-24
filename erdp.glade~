@@ -28,7 +28,7 @@
                 <property name="can_default">True</property>
                 <property name="has_default">True</property>
                 <property name="receives_default">True</property>
-                <signal name="clicked" handler="rdp_connect" object="erdp" swapped="no"/>
+                <signal name="clicked" handler="rdp_connect" object="erdpdata" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">True</property>

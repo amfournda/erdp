@@ -6,23 +6,7 @@ int main(int argc, char *argv[]) {
 	GtkWidget *erdp;
 	GError *error = NULL;
 
-	/*find where my executable is*/
-	char path[PATH_MAX];
-	char *end;
-	size_t len;
-	pid_t pid = getpid();
-	snprintf(path, sizeof(path), "/proc/%d/exe", pid);
-	if (readlink(path, path, PATH_MAX) == -1)
-		perror("readlink");
-	/*this is bad and hacky and I should feel bad*/
-	len = strlen(path) - strlen("/erdp\0");
-	printf("Executable Path: %s\n", path);
-	for(;strncmp("/erdp\0", &path[len], strlen("/erdp\0")) != 0;len--){
-		path[len+ strlen("/erdp\0")] = '\0';
-	};
-	path[len] = '\0';
-	char *gladefile = g_strconcat(path, "/erdp.glade", NULL);
-	printf("Gladefile Path: %s\n", gladefile);
+	char *gladefile = find_gladefile();
 
 	/*get all the objects we need*/
 	gtk_init(&argc,&argv);

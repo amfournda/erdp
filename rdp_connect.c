@@ -6,6 +6,8 @@ void rdp_connect(GtkButton *connect, gpointer erdp) {
 	GtkEntry *ruser = (GtkEntry *) find_child(erdp, "user");
 	GtkEntry *rpass = (GtkEntry *) find_child(erdp, "pass");
 	GtkCheckButton *fullscreen = (GtkCheckButton *) find_child(erdp, "fullscreen");
+	GtkCheckButton *displaycontrol = (GtkCheckButton *) find_child(erdp, "displaycontrol");
+	GtkCheckButton *smartscaling = (GtkCheckButton *) find_child(erdp, "smartscaling");
 
 	/*format my strings correctly*/
 	char *fip = malloc(strlen("/v:")+strlen(gtk_entry_get_text(rip))+1);
@@ -20,6 +22,13 @@ void rdp_connect(GtkButton *connect, gpointer erdp) {
 	if(gtk_toggle_button_get_active((GtkToggleButton*)fullscreen) == TRUE) {
 		add_opt(opts, opts, "/f");
 	}
+	if(gtk_toggle_button_get_active((GtkToggleButton*)displaycontrol) == TRUE) {
+		add_opt(opts, opts, "/disp");
+	}
+	if(gtk_toggle_button_get_active((GtkToggleButton*)smartscaling) == TRUE) {
+		add_opt(opts, opts, "/size:95%");
+	}
+
 
 	/*and call xfreerdp*/
 	int i;

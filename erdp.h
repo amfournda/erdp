@@ -11,7 +11,6 @@
 char* find_gladefile() {
 	/*find where my executable is*/
 	char path[PATH_MAX];
-	char *end;
 	size_t len;
 	pid_t pid = getpid();
 	snprintf(path, sizeof(path), "/proc/%d/exe", pid);

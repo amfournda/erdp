@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <gtk/gtk.h>
+#include <stddef.h>
 
 GtkWidget* find_child(GtkWidget* parent, const gchar* name) {
 	if(g_utf8_collate(gtk_widget_get_name((GtkWidget*)parent), (gchar*)name) == 0) { 
@@ -34,3 +35,5 @@ void add_opt(char* opts[], char* ret[], char* toadd) {
 	ret[len+1] = NULL;
 	return;
 }
+
+

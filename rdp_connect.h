@@ -24,3 +24,13 @@ GtkWidget* find_child(GtkWidget* parent, const gchar* name) {
 	return NULL;
 }
 
+void add_opt(char* opts[], char* ret[], char* toadd) {
+	int len;
+	for(len=0;opts[len] != NULL;len++){
+		ret[len] = opts[len];
+	};
+	ret[len] = toadd;
+	ret[len+1] = malloc(sizeof(NULL));
+	ret[len+1] = NULL;
+	return;
+}

@@ -17,19 +17,18 @@ void rdp_connect(GtkButton *connect, gpointer erdp) {
 	
 	/*check what options to add to rdp*/
 	char *opts[] = {"/usr/bin/xfreerdp","/cert-ignore", fip, fuser, fpass, NULL};
-	int len=5;
 	if(gtk_toggle_button_get_active((GtkToggleButton*)fullscreen) == TRUE) {
-		opts[len] = realloc(opts[len], sizeof("/f"));
-		opts[len] = "/f";
-		len++;
-		opts[len] = malloc(sizeof(NULL));
-		opts[len] = NULL;
+		add_opt(opts, opts, "/f");
 	}
 
 	/*and call xfreerdp*/
 	int i;
 	printf("Calling: ");
 	for(i=0;opts[i] != NULL;i++) {
+		if(opts[i][0] == '/' && opts[i][1] == 'p') {
+			printf("/p:**** ");
+			continue;
+		}
 		printf("%s ", opts[i]);
 	}
 	printf("\n");

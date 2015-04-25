@@ -1,3 +1,7 @@
+#This generic makefile is from 
+#https://github.com/mbcrawfo/GenericMakefile
+#All credit for it goes to them.
+
 #### PROJECT SETTINGS ####
 # The name of the executable to be created
 BIN_NAME := erdp

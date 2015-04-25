@@ -36,4 +36,3 @@ void add_opt(char* opts[], char* ret[], char* toadd) {
 	return;
 }
 
-

@@ -7,6 +7,10 @@ int main(int argc, char *argv[]) {
 	GError *error = NULL;
 
 	char *gladefile = find_gladefile();
+	if(gladefile == NULL) {
+		printf(".glade file not found. Was the program installed correctly?\n");
+		return -1;
+	}	
 
 	/*get all the objects we need*/
 	gtk_init(&argc,&argv);

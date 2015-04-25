@@ -1,3 +1,3 @@
 This depends on GTK+-3.0 and xfreerdp (obviously).
 
-Make will produce a binary called "erdp." Copy it and the .glade file to ~/bin/ or /usr/bin/ or wherever.
+This program is fairly simple. You can simply 'make' and 'make install' to install it to /usr.

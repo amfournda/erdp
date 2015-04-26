@@ -5,6 +5,9 @@
 #include <gtk/gtk.h>
 #include <stddef.h>
 
+extern char *strdup(const char *s);
+extern ssize_t readlink(const char *restrict path, char *restrict buf, size_t bufsize);
+
 GtkWidget* find_child(GtkWidget* parent, const gchar* name) {
 	if(g_utf8_collate(gtk_widget_get_name((GtkWidget*)parent), (gchar*)name) == 0) { 
 		return parent;

@@ -247,30 +247,17 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkEntry" id="scaleto">
-                    <property name="name">scaleto</property>
+                  <object class="GtkEntry" id="width">
+                    <property name="name">width</property>
+                    <property name="width_request">4</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="max_length">3</property>
-                    <property name="width_chars">3</property>
+                    <property name="width_chars">4</property>
                     <property name="max_width_chars">3</property>
-                    <property name="text" translatable="yes">95</property>
                     <property name="input_purpose">number</property>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
-                    <property name="top_attach">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="label1">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="halign">start</property>
-                    <property name="label" translatable="yes">%</property>
-                  </object>
-                  <packing>
-                    <property name="left_attach">2</property>
                     <property name="top_attach">1</property>
                   </packing>
                 </child>
@@ -307,6 +294,43 @@
                   </packing>
                 </child>
                 <child>
+                  <object class="GtkEntry" id="height">
+                    <property name="name">height</property>
+                    <property name="width_request">4</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="width_chars">6</property>
+                    <property name="input_purpose">number</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">3</property>
+                    <property name="top_attach">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label1">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">x</property>
+                    <attributes>
+                      <attribute name="stretch" value="ultra-condensed"/>
+                    </attributes>
+                  </object>
+                  <packing>
+                    <property name="left_attach">2</property>
+                    <property name="top_attach">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
                   <placeholder/>
                 </child>
                 <child>
@@ -321,6 +345,7 @@
               </object>
               <packing>
                 <property name="position">1</property>
+                <property name="tab_expand">True</property>
               </packing>
             </child>
             <child type="tab">
@@ -333,12 +358,6 @@
                 <property name="position">1</property>
                 <property name="tab_fill">False</property>
               </packing>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child type="tab">
-              <placeholder/>
             </child>
           </object>
           <packing>

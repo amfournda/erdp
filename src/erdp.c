@@ -17,20 +17,16 @@ int main(int argc, char *argv[]) {
 	gtk_init(&argc,&argv);
 	builder = gtk_builder_new();
 	gtk_builder_add_from_file(builder, gladefile, &error);
-	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	window = GTK_WIDGET(gtk_builder_get_object(builder, "maxwindow"));
 	erdp = GTK_WIDGET(gtk_builder_get_object(builder, "erdp"));
+
+	/*we need to figure out the size of a maximized window for the scaling feature*/
+	gtk_window_maximize((GtkWindow*)window);
+	//gtk_widget_show(window);
 	
 	/*set the window hint and show it*/
 	gtk_window_set_type_hint((GtkWindow*)erdp, GDK_WINDOW_TYPE_HINT_DIALOG);
 	gtk_widget_show(erdp);
-
-	/*we need to figure out the size of a maximized window for the scaling feature*/
-	gtk_window_set_decorated((GtkWindow*)window, FALSE);
-	gtk_window_maximize((GtkWindow*)window);
-	gtk_widget_set_opacity((GtkWidget*)window, 0.0);
-	gtk_widget_set_name((GtkWidget*)window, "maxwin");
-	g_signal_connect(G_OBJECT(window), "map-event", G_CALLBACK(maxwin), erdp);
-	gtk_widget_show(window);
 
 	/*connect all my signal handlers and unmap my builder*/
 	gtk_builder_connect_signals(builder, NULL);

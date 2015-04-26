@@ -165,7 +165,10 @@ install:
 	@echo "Installing to $(DESTDIR)$(INSTALL_PREFIX)/bin"
 	@$(INSTALL_PROGRAM) $(BIN_PATH)/$(BIN_NAME) $(DESTDIR)$(INSTALL_PREFIX)/bin
 	mkdir -p $(DESTDIR)$(INSTALL_PREFIX)/share/$(BIN_NAME)
-	cp $(RES_PATH)/* $(DESTDIR)$(INSTALL_PREFIX)/share/$(BIN_NAME)
+	cp $(RES_PATH)/erdp.glade $(DESTDIR)$(INSTALL_PREFIX)/share/$(BIN_NAME)
+	cp $(RES_PATH)/erdp.desktop $(DESTDIR)$(INSTALL_PREFIX)/share/applications/
+	mkdir -p $(DESTDIR)$(INSTALL_PREFIX)/share/icons/gnome/128x128/apps/
+	cp $(RES_PATH)/erdp.png $(DESTDIR)$(INSTALL_PREFIX)/share/icons/gnome/128x128/apps/
 
 # Uninstalls the program
 .PHONY: uninstall

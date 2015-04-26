@@ -7,9 +7,11 @@ void rdp_connect(GtkButton *connect, gpointer erdp) {
 	GtkEntry *rpass = (GtkEntry *) find_child(erdp, "pass");
 	GtkEntry *arguments = (GtkEntry *) find_child(erdp, "arguments");
 	GtkCheckButton *fullscreen = (GtkCheckButton *) find_child(erdp, "fullscreen");
-	GtkCheckButton *displaycontrol = (GtkCheckButton *) find_child(erdp, "displaycontrol");
+	GtkCheckButton *decorations = (GtkCheckButton *) find_child(erdp, "decorations");
 	GtkCheckButton *smartscaling = (GtkCheckButton *) find_child(erdp, "smartscaling");
 	GtkCheckButton *sound = (GtkCheckButton *) find_child(erdp, "sound");
+	GtkCheckButton *clipboard = (GtkCheckButton *) find_child(erdp, "clipboard");
+	GtkCheckButton *homedir = (GtkCheckButton *) find_child(erdp, "homedir");
 
 	/*format my strings correctly*/
 	char *fip = malloc(strlen("/v:")+strlen(gtk_entry_get_text(rip))+1);
@@ -20,18 +22,30 @@ void rdp_connect(GtkButton *connect, gpointer erdp) {
 	fpass = g_strconcat("/p:", gtk_entry_get_text(rpass), NULL);
 	
 	/*check what options to add to rdp from the options tickboxes*/
-	char *opts[] = {"/usr/bin/xfreerdp","/cert-ignore", fip, fuser, fpass, NULL};
+	char *opts[] = {"/usr/bin/xfreerdp","+cert-ignore", fip, fuser, fpass, NULL};
 	if(gtk_toggle_button_get_active((GtkToggleButton*)fullscreen) == TRUE) {
 		add_opt(opts, opts, "/f");
 	}
-	if(gtk_toggle_button_get_active((GtkToggleButton*)displaycontrol) == TRUE) {
+	if(gtk_toggle_button_get_active((GtkToggleButton*)decorations) == TRUE) {
 		add_opt(opts, opts, "/disp");
+		add_opt(opts, opts, "/aero");
+		add_opt(opts, opts, "/menu-anims");
+		add_opt(opts, opts, "/fonts");
+		add_opt(opts, opts, "/window-drag");
 	}
 	if(gtk_toggle_button_get_active((GtkToggleButton*)smartscaling) == TRUE) {
-		add_opt(opts, opts, "/size:95%");
+		GtkEntry *scaleto = (GtkEntry *) find_child(erdp, "scaleto");
+		char *buff = g_strconcat("/size:", gtk_entry_get_text(scaleto), "%", NULL);
+		add_opt(opts, opts, buff);
 	}
 	if(gtk_toggle_button_get_active((GtkToggleButton*)sound) == TRUE) {
 		add_opt(opts, opts, "/sound");
+	}
+	if(gtk_toggle_button_get_active((GtkToggleButton*)clipboard) == TRUE) {
+		add_opt(opts, opts, "/clipboard");
+	}
+	if(gtk_toggle_button_get_active((GtkToggleButton*)homedir) == TRUE) {
+		add_opt(opts, opts, "/home-drive");
 	}
 
 	/*add user specified options*/

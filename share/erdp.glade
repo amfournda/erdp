@@ -183,6 +183,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="row_homogeneous">True</property>
+                <property name="column_homogeneous">True</property>
                 <child>
                   <object class="GtkCheckButton" id="fullscreen">
                     <property name="label" translatable="yes">Fullscreen</property>

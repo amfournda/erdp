@@ -22,7 +22,9 @@ int main(int argc, char *argv[]) {
 
 	/*we need to figure out the size of a maximized window for the scaling feature*/
 	gtk_window_maximize((GtkWindow*)window);
-	//gtk_widget_show(window);
+	gtk_widget_set_visible(window, FALSE);
+	gtk_window_set_type_hint((GtkWindow*)window, GDK_WINDOW_TYPE_HINT_NORMAL);
+	gtk_widget_show(window);
 	
 	/*set the window hint and show it*/
 	gtk_window_set_type_hint((GtkWindow*)erdp, GDK_WINDOW_TYPE_HINT_DIALOG);

@@ -175,6 +175,9 @@ install:
 uninstall:
 	@echo "Removing $(DESTDIR)$(INSTALL_PREFIX)/bin/$(BIN_NAME)"
 	@$(RM) $(DESTDIR)$(INSTALL_PREFIX)/bin/$(BIN_NAME)
+	rm $(DESTDIR)$(INSTALL_PREFIX)/share/$(BIN_NAME)/erdp.glade
+	rm $(DESTDIR)$(INSTALL_PREFIX)/share/applications/erdp.desktop
+	rm $(DESTDIR)$(INSTALL_PREFIX)/share/icons/gnome/128x128/apps/erdp.png
 
 # Removes all build files
 .PHONY: clean

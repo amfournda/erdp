@@ -12,7 +12,7 @@ extern void maxwin(GtkWidget *window, gpointer erdp);
 
 char* find_gladefile() {
 	/*find where my executable is*/
-	char path[PATH_MAX];
+	char path[PATH_MAX] = "\0";
 	char *gladename = "/erdp.glade";
 	size_t len;
 	pid_t pid = getpid();

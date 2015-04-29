@@ -1,5 +1,4 @@
 #include "rdp_connect.h"
-#include "maxwin.h"
 
 void rdp_connect(GtkButton *connect, gpointer erdp) {
 	/*get the string info*/
@@ -35,17 +34,17 @@ void rdp_connect(GtkButton *connect, gpointer erdp) {
 		add_opt(opts, opts, "/window-drag");
 	}
 	if(gtk_toggle_button_get_active((GtkToggleButton*)smartscaling) == TRUE) {
-		GdkRectangle *workarea;
-		workarea->x = 1024;
-		workarea->y = 768;
-		//GdkScreen *screen = gdk_screen_get_default();
-		//GdkWindow *gdk_window = gtk_widget_get_window(GTK_WIDGET(erdp));
-		//gdk_screen_get_monitor_workarea(screen, 0, workarea);
-		char width[sizeof(int)*8+1];
-		itoa(workarea->x, width, 10);
-		char height[sizeof(int)*8+1]; 
-		itoa(workarea->y, height, 10);
-		char *buff2 = g_strconcat("/size:", width, "x", height, NULL);
+		GdkRectangle *workarea = g_new(GdkRectangle, 1);
+		workarea->width = 1024;
+		workarea->height = 768;
+		GdkScreen *screen = gdk_screen_get_default();
+		gdk_screen_get_monitor_workarea(screen, 0, workarea);
+		char width[sizeof(int)*8+1] = "\0";
+		snprintf(width, sizeof(int)*9, "%d", workarea->width);
+		char height[sizeof(int)*8+1] = "\0"; 
+		snprintf(height, sizeof(int)*9, "%d", workarea->height);
+		char buff2[sizeof(int)*18] = "\0";
+		snprintf(buff2, sizeof(int)*18, "/size:%sx%s\0", width, height);
 		add_opt(opts, opts, buff2);
 	}
 	if(gtk_toggle_button_get_active((GtkToggleButton*)sound) == TRUE) {
@@ -65,13 +64,12 @@ void rdp_connect(GtkButton *connect, gpointer erdp) {
 		add_opt(opts, opts, buff);
 		buff = strtok(NULL, " ");
 	}
-	g_free(buff);
 
 	/*and call xfreerdp*/
 	int i;
 	printf("Calling: ");
 	for(i=0;opts[i] != NULL;i++) {
-		if(opts[i][0] == '/' && opts[i][1] == 'p') {
+		if(opts[i][0] == '/' && opts[i][1] == 'p' && opts[i][2] == ':') {
 			printf("/p:**** ");
 			continue;
 		}

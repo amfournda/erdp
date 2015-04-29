@@ -1,4 +1,5 @@
 #include "rdp_connect.h"
+#include "maxwin.h"
 
 void rdp_connect(GtkButton *connect, gpointer erdp) {
 	/*get the string info*/
@@ -6,8 +7,6 @@ void rdp_connect(GtkButton *connect, gpointer erdp) {
 	GtkEntry *ruser = (GtkEntry *) find_child(erdp, "user");
 	GtkEntry *rpass = (GtkEntry *) find_child(erdp, "pass");
 	GtkEntry *arguments = (GtkEntry *) find_child(erdp, "arguments");
-	GtkEntry *height = (GtkEntry *) find_child(erdp, "height");
-	GtkEntry *width = (GtkEntry *) find_child(erdp, "width");
 	GtkCheckButton *fullscreen = (GtkCheckButton *) find_child(erdp, "fullscreen");
 	GtkCheckButton *decorations = (GtkCheckButton *) find_child(erdp, "decorations");
 	GtkCheckButton *smartscaling = (GtkCheckButton *) find_child(erdp, "smartscaling");
@@ -36,8 +35,16 @@ void rdp_connect(GtkButton *connect, gpointer erdp) {
 		add_opt(opts, opts, "/window-drag");
 	}
 	if(gtk_toggle_button_get_active((GtkToggleButton*)smartscaling) == TRUE) {
-		//GtkEntry *scaleto = (GtkEntry *) find_child(erdp, "scaleto");
-		//char *buff = g_strconcat("/size:", gtk_entry_get_ext(scaleto), "%", NULL);
+		GdkRectangle *workarea;
+		workarea->x = 1024;
+		workarea->y = 768;
+		//GdkScreen *screen = gdk_screen_get_default();
+		//GdkWindow *gdk_window = gtk_widget_get_window(GTK_WIDGET(erdp));
+		//gdk_screen_get_monitor_workarea(screen, 0, workarea);
+		char width[sizeof(int)*8+1];
+		itoa(workarea->x, width, 10);
+		char height[sizeof(int)*8+1]; 
+		itoa(workarea->y, height, 10);
 		char *buff2 = g_strconcat("/size:", width, "x", height, NULL);
 		add_opt(opts, opts, buff2);
 	}

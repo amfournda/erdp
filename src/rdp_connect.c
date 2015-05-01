@@ -14,68 +14,65 @@ void rdp_connect(GtkButton *connect, gpointer erdp) {
 	GtkCheckButton *homedir = (GtkCheckButton *) find_child(erdp, "homedir");
 
 	/*format my strings correctly*/
-	char *fip = malloc(strlen("/v:")+strlen(gtk_entry_get_text(rip))+1);
-	fip = g_strconcat("/v:", gtk_entry_get_text(rip), NULL);
-	char *fuser = malloc(strlen("/u:")+strlen(gtk_entry_get_text(ruser))+1);
-	fuser = g_strconcat("/u:", gtk_entry_get_text(ruser), NULL);
-	char *fpass = malloc(strlen("/p:")+strlen(gtk_entry_get_text(rpass))+1);
-	fpass = g_strconcat("/p:", gtk_entry_get_text(rpass), NULL);
+	char *fip = g_strconcat("/v:", gtk_entry_get_text(rip), NULL);
+	char *fuser = g_strconcat("/u:", gtk_entry_get_text(ruser), NULL);
+	char *fpass = g_strconcat("/p:", gtk_entry_get_text(rpass), NULL);
 	
 	/*check what options to add to rdp from the options tickboxes*/
-	char *opts[] = {"/usr/bin/xfreerdp","+cert-ignore", fip, fuser, fpass};
-	opts[5] = malloc(sizeof(char*));
-	opts[5] = NULL;
-	char *buff = malloc(sizeof(char)*FILENAME_MAX);
+	int optslen = 4;
+	char **opts = malloc(optslen * sizeof(char*));
+	opts[0] = "/usr/bin/xfreerdp";
+	opts[1] = "+cert-ignore";
+	opts[2] = fip;
+	opts[3] = fuser;
+	opts[4] = fpass;
+
 	if(gtk_toggle_button_get_active((GtkToggleButton*)fullscreen) == TRUE) {
-		buff = "/f";
-		add_opt(opts, opts, strlen(buff), buff);
+		optslen++;
+		opts[optslen] = "/f";
 	}
 	if(gtk_toggle_button_get_active((GtkToggleButton*)decorations) == TRUE) {
-		buff = "/disp";
-		add_opt(opts, opts, strlen(buff), buff);
-		buff = "/aero";
-		add_opt(opts, opts, strlen(buff), buff);
-		buff = "/menu-anims";
-		add_opt(opts, opts, strlen(buff), buff);
-		buff = "/fonts";
-		add_opt(opts, opts, strlen(buff), buff);
-		buff = "/window-drag";
-		add_opt(opts, opts, strlen(buff), buff);
+		optslen++;
+		opts[optslen] = "/disp";
+		optslen++;
+		opts[optslen] = "/fonts";
+		optslen++;
+		opts[optslen] = "/aero";
+		optslen++;
+		opts[optslen] = "/window-drag";
+		optslen++;
+		opts[optslen] = "/menu-anims";
 	}
 	if(gtk_toggle_button_get_active((GtkToggleButton*)smartscaling) == TRUE) {
 		GdkRectangle *workarea = g_new(GdkRectangle, 1);
-		workarea->width = 1024;
-		workarea->height = 768;
 		GdkScreen *screen = gdk_screen_get_default();
-		gdk_screen_get_monitor_workarea(screen, gdk_screen_get_primary_monitor(screen), workarea);
-		char width[10] = "\0";
-		snprintf(width, 9, "%d", workarea->width);
-		char height[10] = "\0"; 
-		snprintf(height, 9, "%d", workarea->height);
-		snprintf(buff, 31, "/size:%sx%s", width, height);
-		add_opt(opts, opts, strlen(buff), buff);
+		gint monitor = gdk_screen_get_primary_monitor(screen);
+		gdk_screen_get_monitor_workarea(screen, monitor, workarea);
+		int width = workarea->width*1.0;
+		int height = workarea->height*0.95;
+		char sizebuff[32];
+		snprintf(sizebuff, 31, "/size:%dx%d", width, height);
+		optslen++;
+		opts[optslen] = sizebuff;
 	}
 	if(gtk_toggle_button_get_active((GtkToggleButton*)sound) == TRUE) {
-		buff = "/sound";
-		add_opt(opts, opts, strlen(buff), buff);
+		optslen++;
+		opts[optslen] = "/sound";
 	}
 	if(gtk_toggle_button_get_active((GtkToggleButton*)clipboard) == TRUE) {
-		buff = "/clipboard";
-		add_opt(opts, opts, strlen(buff), buff);
+		optslen++;
+		opts[optslen] = "/clipboard";
 	}
 	if(gtk_toggle_button_get_active((GtkToggleButton*)homedir) == TRUE) {
-		buff = "/home-drive";
-		add_opt(opts, opts, strlen(buff), buff);
+		optslen++;
+		opts[optslen] = "/home-drive";
 	}
+	
 
-	/*add user specified options*/
-	char *temp = strdup(gtk_entry_get_text(arguments));
-	buff = strtok(temp, " ");
-	while (buff != NULL) {
-		add_opt(opts, opts, strlen(buff), buff);
-		buff = strtok(NULL, " ");
-	}
-	g_free(temp);
+	/* Add the trailing NULL */
+	optslen++;
+	opts[optslen] = NULL;
+
 
 	/*and call xfreerdp*/
 	int i;

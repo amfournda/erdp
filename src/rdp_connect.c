@@ -22,54 +22,66 @@ void rdp_connect(GtkButton *connect, gpointer erdp) {
 	fpass = g_strconcat("/p:", gtk_entry_get_text(rpass), NULL);
 	
 	/*check what options to add to rdp from the options tickboxes*/
-	char *opts[] = {"/usr/bin/xfreerdp","+cert-ignore", fip, fuser, fpass, NULL};
+	char *opts[] = {"/usr/bin/xfreerdp","+cert-ignore", fip, fuser, fpass};
+	opts[5] = malloc(sizeof(char*));
+	opts[5] = NULL;
+	char *buff = malloc(sizeof(char)*FILENAME_MAX);
 	if(gtk_toggle_button_get_active((GtkToggleButton*)fullscreen) == TRUE) {
-		add_opt(opts, opts, "/f");
+		buff = "/f";
+		add_opt(opts, opts, strlen(buff), buff);
 	}
 	if(gtk_toggle_button_get_active((GtkToggleButton*)decorations) == TRUE) {
-		add_opt(opts, opts, "/disp");
-		add_opt(opts, opts, "/aero");
-		add_opt(opts, opts, "/menu-anims");
-		add_opt(opts, opts, "/fonts");
-		add_opt(opts, opts, "/window-drag");
+		buff = "/disp";
+		add_opt(opts, opts, strlen(buff), buff);
+		buff = "/aero";
+		add_opt(opts, opts, strlen(buff), buff);
+		buff = "/menu-anims";
+		add_opt(opts, opts, strlen(buff), buff);
+		buff = "/fonts";
+		add_opt(opts, opts, strlen(buff), buff);
+		buff = "/window-drag";
+		add_opt(opts, opts, strlen(buff), buff);
 	}
 	if(gtk_toggle_button_get_active((GtkToggleButton*)smartscaling) == TRUE) {
 		GdkRectangle *workarea = g_new(GdkRectangle, 1);
 		workarea->width = 1024;
 		workarea->height = 768;
 		GdkScreen *screen = gdk_screen_get_default();
-		gdk_screen_get_monitor_workarea(screen, 0, workarea);
-		char width[sizeof(int)*8+1] = "\0";
-		snprintf(width, sizeof(int)*9, "%d", workarea->width);
-		char height[sizeof(int)*8+1] = "\0"; 
-		snprintf(height, sizeof(int)*9, "%d", workarea->height);
-		char buff2[sizeof(int)*18] = "\0";
-		snprintf(buff2, sizeof(int)*18, "/size:%sx%s\0", width, height);
-		add_opt(opts, opts, buff2);
+		gdk_screen_get_monitor_workarea(screen, gdk_screen_get_primary_monitor(screen), workarea);
+		char width[10] = "\0";
+		snprintf(width, 9, "%d", workarea->width);
+		char height[10] = "\0"; 
+		snprintf(height, 9, "%d", workarea->height);
+		snprintf(buff, 31, "/size:%sx%s", width, height);
+		add_opt(opts, opts, strlen(buff), buff);
 	}
 	if(gtk_toggle_button_get_active((GtkToggleButton*)sound) == TRUE) {
-		add_opt(opts, opts, "/sound");
+		buff = "/sound";
+		add_opt(opts, opts, strlen(buff), buff);
 	}
 	if(gtk_toggle_button_get_active((GtkToggleButton*)clipboard) == TRUE) {
-		add_opt(opts, opts, "/clipboard");
+		buff = "/clipboard";
+		add_opt(opts, opts, strlen(buff), buff);
 	}
 	if(gtk_toggle_button_get_active((GtkToggleButton*)homedir) == TRUE) {
-		add_opt(opts, opts, "/home-drive");
+		buff = "/home-drive";
+		add_opt(opts, opts, strlen(buff), buff);
 	}
 
 	/*add user specified options*/
 	char *temp = strdup(gtk_entry_get_text(arguments));
-	char *buff = strtok(temp, " ");
+	buff = strtok(temp, " ");
 	while (buff != NULL) {
-		add_opt(opts, opts, buff);
+		add_opt(opts, opts, strlen(buff), buff);
 		buff = strtok(NULL, " ");
 	}
+	g_free(temp);
 
 	/*and call xfreerdp*/
 	int i;
 	printf("Calling: ");
 	for(i=0;opts[i] != NULL;i++) {
-		if(opts[i][0] == '/' && opts[i][1] == 'p' && opts[i][2] == ':') {
+		if(strncmp(opts[i], "/p:", 3) == 0) {
 			printf("/p:**** ");
 			continue;
 		}

@@ -6,6 +6,7 @@
 #include <gdk/gdk.h>
 #include <stddef.h>
 #include <stdbool.h>
+#include <limits.h>
 
 extern char *strdup(const char *s1);
 
@@ -29,15 +30,12 @@ GtkWidget* find_child(GtkWidget* parent, const gchar* name) {
 	return NULL;
 }
 
-void add_opt(char* opts[], char* ret[], char* toadd) {
-	int len;
-	for(len=0;opts[len] != NULL;len++){
+void add_opt(char* opts[], char* ret[], int len, char* toadd) {
+	ret = realloc(ret, sizeof(char*)*len);
+	int i;
+	for(i=0;i < len;len++){
 		ret[len] = opts[len];
 	};
-	ret[len] = malloc(strlen(toadd));
-	ret[len] = toadd;
-	ret[len+1] = malloc(sizeof(NULL));
-	ret[len+1] = NULL;
 	return;
 }
 

@@ -92,12 +92,22 @@ void rdp_connect(GtkButton *connect, gpointer erdp) {
 		strcpy(opts[optslen], "/home-drive");
 		optslen++;
 	}
-	
+
+	/* add the user specified options. We do no error checking */
+	char *argtext = strdup(gtk_entry_get_text(arguments));
+	char *argbuff = strtok(argtext, " ");
+	while(argbuff != NULL) {
+		opts = (char **) realloc(opts, sizeof(char *) * (optslen+1));
+		opts[optslen] = malloc(sizeof(char) * (strlen(argbuff)+1));
+		strcpy(opts[optslen], argbuff);
+		optslen++;
+		strtok(NULL, " ");
+	}
 
 	/* Add the trailing NULL */
 	opts = (char **) realloc(opts, sizeof(char *) * (optslen+1));
 	opts[optslen] = malloc(sizeof(NULL));
-	opts[optslen] = NULL;
+	opts[optslen] = (char*) NULL;
 
 
 	/*and call xfreerdp*/

@@ -65,10 +65,15 @@ void rdp_connect(GtkButton *connect, gpointer erdp) {
 		GdkScreen *screen = gdk_screen_get_default();
 		gint monitor = gdk_screen_get_primary_monitor(screen);
 		gdk_screen_get_monitor_workarea(screen, monitor, workarea);
-		int width = workarea->width*1.0;
-		int height = workarea->height*0.95;
+		int width = workarea->width;
+		int height = workarea->height;
 		char sizebuff[32];
 		snprintf(sizebuff, 31, "/size:%dx%d", width, height);
+		opts = (char **) realloc(opts, sizeof(char *) * (optslen+1));
+		opts[optslen] = malloc(sizeof(char) * (strlen(sizebuff)+1));
+		strcpy(opts[optslen], sizebuff);
+		optslen++;
+		snprintf(sizebuff, 31, "/smart-sizing:%dx%d", width, height);
 		opts = (char **) realloc(opts, sizeof(char *) * (optslen+1));
 		opts[optslen] = malloc(sizeof(char) * (strlen(sizebuff)+1));
 		strcpy(opts[optslen], sizebuff);

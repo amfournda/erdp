@@ -19,46 +19,23 @@ void rdp_connect(GtkButton *connect, gpointer erdp) {
 	char *fpass = g_strconcat("/p:", gtk_entry_get_text(rpass), NULL);
 	
 	/*check what options to add to rdp from the options tickboxes*/
-	int optslen = 5;
-	char **opts = malloc(optslen * sizeof(char*));
-	opts[0] = malloc(sizeof(char) * (strlen("/usr/bin/xfreerdp")+1));
-	strcpy(opts[0], "/usr/bin/xfreerdp");
-	opts[1] = malloc(sizeof(char) * (strlen("/cert-ignore")+1));
-	strcpy(opts[1], "/cert-ignore");
-	opts[2] = malloc(sizeof(char) * (strlen(fip)+1));
-	strcpy(opts[2], fip);
-	opts[3] = malloc(sizeof(char) * (strlen(fuser)+1));
-	strcpy(opts[3], fuser);
-	opts[4] = malloc(sizeof(char) * (strlen(fpass)+1));
-	strcpy(opts[4], fpass);
+	char **opts = malloc(sizeof(char *));
+	opts[0] = NULL;
+	opts = add_opt(&opts, "/usr/bin/xfreerdp");
+	opts = add_opt(&opts, "/cert-ignore");
+	opts = add_opt(&opts, fip);
+	opts = add_opt(&opts, fuser);
+	opts = add_opt(&opts, fpass);
 	
 	if(gtk_toggle_button_get_active((GtkToggleButton*)fullscreen) == TRUE) {
-		opts = (char **) realloc(opts, sizeof(char *) * (optslen+1));
-		opts[optslen] = malloc(sizeof(char) * (strlen("/f")+1));
-		strcpy(opts[optslen], "/f");
-		optslen++;
+		opts = add_opt(&opts, "/f");
 	}
 	if(gtk_toggle_button_get_active((GtkToggleButton*)decorations) == TRUE) {
-		opts = (char **) realloc(opts, sizeof(char *) * (optslen+1));
-		opts[optslen] = malloc(sizeof(char) * (strlen("/disp")+1));
-		strcpy(opts[optslen], "/disp");
-		optslen++;
-		opts = (char **) realloc(opts, sizeof(char *) * (optslen+1));
-		opts[optslen] = malloc(sizeof(char) * (strlen("/fonts")+1));
-		strcpy(opts[optslen], "/fonts");
-		optslen++;
-		opts = (char **) realloc(opts, sizeof(char *) * (optslen+1));
-		opts[optslen] = malloc(sizeof(char) * (strlen("/aero")+1));
-		strcpy(opts[optslen], "/aero");
-		optslen++;
-		opts = (char **) realloc(opts, sizeof(char *) * (optslen+1));
-		opts[optslen] = malloc(sizeof(char) * (strlen("/window-drag")+1));
-		strcpy(opts[optslen], "/window-drag");
-		optslen++;
-		opts = (char **) realloc(opts, sizeof(char *) * (optslen+1));
-		opts[optslen] = malloc(sizeof(char) * (strlen("/menu-anims")+1));
-		strcpy(opts[optslen], "/menu-anims");
-		optslen++;
+		opts = add_opt(&opts, "/disp");
+		opts = add_opt(&opts, "/fonts");
+		opts = add_opt(&opts, "/aero");
+		opts = add_opt(&opts, "/window-drag");
+		opts = add_opt(&opts, "/menu-anims");
 	}
 	if(gtk_toggle_button_get_active((GtkToggleButton*)smartscaling) == TRUE) {
 		GdkRectangle *workarea = g_new(GdkRectangle, 1);
@@ -69,51 +46,27 @@ void rdp_connect(GtkButton *connect, gpointer erdp) {
 		int height = workarea->height;
 		char sizebuff[32];
 		snprintf(sizebuff, 31, "/size:%dx%d", width, height);
-		opts = (char **) realloc(opts, sizeof(char *) * (optslen+1));
-		opts[optslen] = malloc(sizeof(char) * (strlen(sizebuff)+1));
-		strcpy(opts[optslen], sizebuff);
-		optslen++;
+		opts = add_opt(&opts, sizebuff);
 		snprintf(sizebuff, 31, "/smart-sizing:%dx%d", width, height);
-		opts = (char **) realloc(opts, sizeof(char *) * (optslen+1));
-		opts[optslen] = malloc(sizeof(char) * (strlen(sizebuff)+1));
-		strcpy(opts[optslen], sizebuff);
-		optslen++;
+		opts = add_opt(&opts, sizebuff);
 	}
 	if(gtk_toggle_button_get_active((GtkToggleButton*)sound) == TRUE) {
-		opts = (char **) realloc(opts, sizeof(char *) * (optslen+1));
-		opts[optslen] = malloc(sizeof(char) * (strlen("/sound")+1));
-		strcpy(opts[optslen], "/sound");
-		optslen++;
+		opts = add_opt(&opts, "/sound");
 	}
 	if(gtk_toggle_button_get_active((GtkToggleButton*)clipboard) == TRUE) {
-		opts = (char **) realloc(opts, sizeof(char *) * (optslen+1));
-		opts[optslen] = malloc(sizeof(char) * (strlen("/clipboard")+1));
-		strcpy(opts[optslen], "/clipboard");
-		optslen++;
+		opts = add_opt(&opts, "/clipboard");
 	}
 	if(gtk_toggle_button_get_active((GtkToggleButton*)homedir) == TRUE) {
-		opts = (char **) realloc(opts, sizeof(char *) * (optslen+1));
-		opts[optslen] = malloc(sizeof(char) * (strlen("/home-drive")+1));
-		strcpy(opts[optslen], "/home-drive");
-		optslen++;
+		opts = add_opt(&opts, "/home-drive");
 	}
 
 	/* add the user specified options. We do no error checking */
 	char *argtext = strdup(gtk_entry_get_text(arguments));
 	char *argbuff = strtok(argtext, " ");
 	while(argbuff != NULL) {
-		opts = (char **) realloc(opts, sizeof(char *) * (optslen+1));
-		opts[optslen] = malloc(sizeof(char) * (strlen(argbuff)+1));
-		strcpy(opts[optslen], argbuff);
-		optslen++;
+		opts = add_opt(&opts, argbuff);
 		strtok(NULL, " ");
 	}
-
-	/* Add the trailing NULL */
-	opts = (char **) realloc(opts, sizeof(char *) * (optslen+1));
-	opts[optslen] = malloc(sizeof(NULL));
-	opts[optslen] = (char*) NULL;
-
 
 	/*and call xfreerdp*/
 	int i;

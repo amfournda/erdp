@@ -30,13 +30,15 @@ GtkWidget* find_child(GtkWidget* parent, const gchar* name) {
 	return NULL;
 }
 
-void add_opt(char* opts[], char* ret[], char* toadd) {
-	int i;
-	for(i=0;opts[i] != NULL;i++){
-		strcpy(ret[i], opts[i]);
-	};
-	strcpy(ret[i], toadd);
-	ret[i+1] = NULL;
-	return;
+char ** add_opt(char*** optsptr, char* toadd) {
+	char ** opts = *optsptr;
+	int optslen=0;
+	for(optslen=0;opts[optslen] != NULL;optslen++){}
+	opts[optslen] = realloc(opts[optslen], strlen(toadd)+1);
+	strcpy(opts[optslen], toadd);
+	optslen++;
+	opts = (char **) realloc(opts, sizeof(char *) * (optslen+1));
+	opts[optslen] = NULL;
+	return opts;
 }
 

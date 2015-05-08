@@ -7,6 +7,8 @@
 #include <stddef.h>
 #include <stdbool.h>
 #include <limits.h>
+#include <sys/wait.h>
+#include <fcntl.h>
 
 extern char *strdup(const char *s1);
 
@@ -42,3 +44,45 @@ char ** add_opt(char*** optsptr, char* toadd) {
 	return opts;
 }
 
+bool check_connect(char* fip, char* fuser, char* fpass) {
+	pid_t childpid;
+	int retval;
+	int pipes[2];
+	pipe(pipes);
+
+	char **args = malloc(sizeof(char *));
+	args[0] = NULL;
+	args = add_opt(&args, "/usr/bin/xfreerdp");
+	args = add_opt(&args, "/auth-only");
+	args = add_opt(&args, "/cert-ignore");
+	args = add_opt(&args, fip);
+	args = add_opt(&args, fuser);
+	args = add_opt(&args, fpass);
+
+	childpid = fork();
+
+	if(childpid == 0) {
+		/*connect STDOUT to our pipe, so our parent can read the output*/
+		dup2(pipes[1], STDOUT_FILENO);
+		close(pipes[0]);
+		close(pipes[1]);
+		/*child execs freerdp with the auth-only argument*/
+		execv("/usr/bin/xfreerdp", args);
+		return false;
+
+	}
+	/*parent waits for the child to return and checks the retval*/
+	wait(&retval);
+	char buf[4096];
+	memset(buf, '\0', 4096);
+	fcntl(pipes[0], F_SETFL, O_NONBLOCK);
+	read(pipes[0], buf, sizeof(buf));
+	printf("%s", buf);
+	int i;
+	for(i=0;buf[i] != '\0'; i++) {}
+	if(buf[i-2] == '0') {
+		return true;
+	}
+	return false;
+
+}

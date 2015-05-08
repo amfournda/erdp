@@ -17,6 +17,11 @@ void rdp_connect(GtkButton *connect, gpointer erdp) {
 	char *fip = g_strconcat("/v:", gtk_entry_get_text(rip), NULL);
 	char *fuser = g_strconcat("/u:", gtk_entry_get_text(ruser), NULL);
 	char *fpass = g_strconcat("/p:", gtk_entry_get_text(rpass), NULL);
+
+	/*check to see if the connection is valid*/
+	if(check_connect(fip, fuser, fpass) != TRUE) {
+		return;
+	}
 	
 	/*check what options to add to rdp from the options tickboxes*/
 	char **opts = malloc(sizeof(char *));

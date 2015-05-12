@@ -16,7 +16,7 @@ LIBS = gtk+-3.0
 # General compiler flags
 COMPILE_FLAGS = -std=c99 -g -rdynamic
 # Additional release-specific flags
-RCOMPILE_FLAGS = -D NDEBUG
+RCOMPILE_FLAGS = -D NDEBUG -O2 -Wno-unused-result
 # Additional debug-specific flags
 DCOMPILE_FLAGS = -D DEBUG
 # Add additional include paths
@@ -136,6 +136,7 @@ else
 endif
 	@$(START_TIME)
 	@$(MAKE) all --no-print-directory
+	@strip -s --strip-unneeded -x $(BIN_NAME)
 	@echo -n "Total build time: "
 	@$(END_TIME)
 
@@ -164,11 +165,11 @@ dirs:
 install:
 	@echo "Installing to $(DESTDIR)$(INSTALL_PREFIX)/bin"
 	@$(INSTALL_PROGRAM) $(BIN_PATH)/$(BIN_NAME) $(DESTDIR)$(INSTALL_PREFIX)/bin
-	mkdir -p $(DESTDIR)$(INSTALL_PREFIX)/share/$(BIN_NAME)
-	cp $(RES_PATH)/erdp.glade $(DESTDIR)$(INSTALL_PREFIX)/share/$(BIN_NAME)
-	cp $(RES_PATH)/erdp.desktop $(DESTDIR)$(INSTALL_PREFIX)/share/applications/
-	mkdir -p $(DESTDIR)$(INSTALL_PREFIX)/share/icons/gnome/128x128/apps/
-	cp $(RES_PATH)/erdp.png $(DESTDIR)$(INSTALL_PREFIX)/share/icons/gnome/128x128/apps/
+	@mkdir -p $(DESTDIR)$(INSTALL_PREFIX)/share/$(BIN_NAME)
+	@cp $(RES_PATH)/erdp.glade $(DESTDIR)$(INSTALL_PREFIX)/share/$(BIN_NAME)
+	@cp $(RES_PATH)/erdp.desktop $(DESTDIR)$(INSTALL_PREFIX)/share/applications/
+	@mkdir -p $(DESTDIR)$(INSTALL_PREFIX)/share/icons/gnome/128x128/apps/
+	@cp $(RES_PATH)/erdp.png $(DESTDIR)$(INSTALL_PREFIX)/share/icons/gnome/128x128/apps/
 
 # Uninstalls the program
 .PHONY: uninstall

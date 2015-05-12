@@ -28,6 +28,7 @@ void rdp_connect(GtkButton *connect, gpointer erdp) {
 	opts[0] = NULL;
 	opts = add_opt(&opts, "/usr/bin/xfreerdp");
 	opts = add_opt(&opts, "/cert-ignore");
+	opts = add_opt(&opts, "/auto-reconnect");
 	opts = add_opt(&opts, fip);
 	opts = add_opt(&opts, fuser);
 	opts = add_opt(&opts, fpass);

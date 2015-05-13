@@ -12,6 +12,9 @@ void rdp_connect(GtkButton *connect, gpointer erdp) {
 	GtkCheckButton *sound = (GtkCheckButton *) find_child(erdp, "sound");
 	GtkCheckButton *clipboard = (GtkCheckButton *) find_child(erdp, "clipboard");
 	GtkCheckButton *homedir = (GtkCheckButton *) find_child(erdp, "homedir");
+	
+	char *xfreerdp = find_executable("xfreerdp");
+	printf("Xfreerdp path: %s\n", xfreerdp);
 
 	/*format my strings correctly*/
 	char *fip = g_strconcat("/v:", gtk_entry_get_text(rip), NULL);
@@ -26,7 +29,7 @@ void rdp_connect(GtkButton *connect, gpointer erdp) {
 	/*check what options to add to rdp from the options tickboxes*/
 	char **opts = malloc(sizeof(char *));
 	opts[0] = NULL;
-	opts = add_opt(&opts, "/usr/bin/xfreerdp");
+	opts = add_opt(&opts, xfreerdp);
 	opts = add_opt(&opts, "/cert-ignore");
 	opts = add_opt(&opts, "/auto-reconnect");
 	opts = add_opt(&opts, fip);
@@ -85,7 +88,7 @@ void rdp_connect(GtkButton *connect, gpointer erdp) {
 		printf("%s ", opts[i]);
 	}
 	printf("\n");
-	execv("/usr/bin/xfreerdp", opts);
+	execv(xfreerdp, opts);
 	/*code never gets here*/
 	return;
 }

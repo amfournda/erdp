@@ -12,6 +12,17 @@
 
 extern char *strdup(const char *s1);
 
+char * find_executable(char *name) {
+	char *path = getenv("PATH");
+	char *dir;
+	for(dir = strtok(path, ":"); dir; dir = strtok(NULL, ":")) {
+		if(access(g_strconcat(dir, "/", name, NULL), F_OK) != -1) {
+			return g_strconcat(dir, "/", name, NULL);
+		}
+	}
+	return NULL;
+}
+
 GtkWidget* find_child(GtkWidget* parent, const gchar* name) {
 	if(g_utf8_collate(gtk_widget_get_name((GtkWidget*)parent), (gchar*)name) == 0) { 
 		return parent;
@@ -52,7 +63,7 @@ bool check_connect(char* fip, char* fuser, char* fpass) {
 
 	char **args = malloc(sizeof(char *));
 	args[0] = NULL;
-	args = add_opt(&args, "/usr/bin/xfreerdp");
+	args = add_opt(&args, find_executable("xfreerdp"));
 	args = add_opt(&args, "/auth-only");
 	args = add_opt(&args, "/cert-ignore");
 	args = add_opt(&args, fip);

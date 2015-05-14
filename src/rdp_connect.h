@@ -12,6 +12,9 @@
 
 extern char *strdup(const char *s1);
 
+/* find_executable takes a string as its first argument
+ * find_executable returns a string that is the full path of the executable in the user's $PATH that matches the name given in the first argument
+ */
 char * find_executable(char *name) {
 	char *path = getenv("PATH");
 	char *dir;
@@ -23,6 +26,10 @@ char * find_executable(char *name) {
 	return NULL;
 }
 
+/* find_child takes a GtkWidget as its first argument and a string as it's second argument.
+ * find_child returns a GtkWidget that is a child of the first argument AND has a name that matches the string in the second argument
+ * In essence, this can be used to find a widget by name and you should pretty much always pass the root GtkWidget as it's first argument
+ */
 GtkWidget* find_child(GtkWidget* parent, const gchar* name) {
 	if(g_utf8_collate(gtk_widget_get_name((GtkWidget*)parent), (gchar*)name) == 0) { 
 		return parent;
@@ -43,6 +50,11 @@ GtkWidget* find_child(GtkWidget* parent, const gchar* name) {
 	return NULL;
 }
 
+
+/* add_opt takes a pointer to a pointer to an array of strings as its first argument and a string as its second argument.
+ * add_opt returns a pointer to an array of strings that contains all of the original strings of the first argument, plus the string pointed to by the second argument
+ * In essence, this appends the string in toadd to the end of the array optsptr
+ */
 char ** add_opt(char*** optsptr, char* toadd) {
 	char ** opts = *optsptr;
 	int optslen=0;
@@ -55,6 +67,10 @@ char ** add_opt(char*** optsptr, char* toadd) {
 	return opts;
 }
 
+/* check_connect takes the properly formatted address, username, and password arguments for xfreerdp as arguments
+ * check_connect returns true only if the connection to the address given suceeds AND the username and password are valid
+ * In essence, this function can be used to check if an rdp connection will succeed
+ */
 bool check_connect(char* fip, char* fuser, char* fpass) {
 	pid_t childpid;
 	int retval;
@@ -78,11 +94,11 @@ bool check_connect(char* fip, char* fuser, char* fpass) {
 		close(pipes[0]);
 		close(pipes[1]);
 		/*child execs freerdp with the auth-only argument*/
-		execv("/usr/bin/xfreerdp", args);
+		execv(find_executable("xfreerdp"), args);
 		return false;
 
 	}
-	/*parent waits for the child to return and checks the retval*/
+	/*parent waits for the child to return and checks the stdout output of xfreerdp. We can't simply use the return value because xfreerdp doesn't propery set it. Instead we are looking for the last outputted character to see if it is a zero (success) or a one (failure). This method, while hacky, actually works.*/
 	wait(&retval);
 	char buf[4096];
 	memset(buf, '\0', 4096);

@@ -1,3 +1,5 @@
-This depends on GTK+-3.0 and xfreerdp (obviously).
+erdp is a small graphical frontend to xfreerdp. It presents the user with a small dialog box where you can input the address, username, password and optionally any arguments to pass on to xfreerdp. A number of options are configurable in the options tab of the dialog box and are enabled by default, including animation, scaling, home directory mapping, auto reconnect, and clipboard integration. Fullscreen options are supported using the checkbox, but is not enabled by default. All options supported by xfreerdp can be passed to it by using the arguments text entry box.
 
-This program is fairly simple. You can simply 'make' and 'make install' to install it to /usr.
+This depends on GTK+-3.0 and xfreerdp (obviously). The xfreerdp executable must be in the user's path in order for this program to call it. Simply installing xfreerdp using your distribution's package manager of choice is probably enough.
+
+To install this program, download the source and run the commands 'make' and 'make install'. This will build the program from source and install the executable in /usr. Installing to alternate locations is not yet supported.

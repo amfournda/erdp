@@ -15,6 +15,9 @@ void rdp_connect(GtkButton *connect, gpointer erdp) {
 	
 	char *xfreerdp = find_executable("xfreerdp");
 	printf("Xfreerdp path: %s\n", xfreerdp);
+	if(xfreerdp == NULL) {
+		return;
+	}
 
 	/*format my strings correctly*/
 	char *fip = g_strconcat("/v:", gtk_entry_get_text(rip), NULL);
@@ -22,10 +25,12 @@ void rdp_connect(GtkButton *connect, gpointer erdp) {
 	char *fpass = g_strconcat("/p:", gtk_entry_get_text(rpass), NULL);
 
 	/*check to see if the connection is valid*/
-	if(check_connect(fip, fuser, fpass) != TRUE) {
+	if(check_connect(xfreerdp, fip, fuser, fpass) != TRUE) {
+		printf("Connection attempt failed! Check your host, username, and password\n");
 		return;
 	}
-	
+	printf("Connection test succeeded, doing real connection now\n");
+	fflush(stdout);
 	/*check what options to add to rdp from the options tickboxes*/
 	char **opts = malloc(sizeof(char *));
 	opts[0] = NULL;
@@ -88,8 +93,11 @@ void rdp_connect(GtkButton *connect, gpointer erdp) {
 		printf("%s ", opts[i]);
 	}
 	printf("\n");
-	execv(xfreerdp, opts);
-	/*code never gets here*/
+	pid_t childpid = fork();
+	if(childpid == 0) {
+		execv(xfreerdp, opts);
+	}
+	gtk_main_quit();
 	return;
 }
 

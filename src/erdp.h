@@ -41,7 +41,7 @@ char* find_gladefile() {
 		printf("Gladefile Path: %s/share%s\n", path, gladename);
 		return g_strconcat(path, "/share", gladename, NULL);
 	}
-	
+
 	/*if it doesn't exist there, check in /usr/share/erdp/ */
 	if(access(g_strconcat("/usr/share/erdp", gladename, NULL), R_OK) != -1) {	
 		printf("Gladefile Path: /usr/share/erdp%s\n", gladename);

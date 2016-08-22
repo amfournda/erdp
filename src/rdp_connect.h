@@ -16,9 +16,9 @@ extern char *strdup(const char *s1);
  * find_executable returns a string that is the full path of the executable in the user's $PATH that matches the name given in the first argument
  */
 char * find_executable(char *name) {
-	char *path = getenv("PATH");
+	char *path = strdup(getenv("PATH"));
 	char *dir;
-	for(dir = strtok(path, ":"); dir; dir = strtok(NULL, ":")) {
+	for(dir = strtok(path, ":"); dir != NULL; dir = strtok(NULL, ":")) {
 		if(access(g_strconcat(dir, "/", name, NULL), F_OK) != -1) {
 			return g_strconcat(dir, "/", name, NULL);
 		}
@@ -57,6 +57,9 @@ GtkWidget* find_child(GtkWidget* parent, const gchar* name) {
  */
 char ** add_opt(char*** optsptr, char* toadd) {
 	char ** opts = *optsptr;
+	if(toadd == NULL) {
+		return opts;
+	}
 	int optslen=0;
 	for(optslen=0;opts[optslen] != NULL;optslen++){}
 	opts[optslen] = realloc(opts[optslen], strlen(toadd)+1);
@@ -71,7 +74,8 @@ char ** add_opt(char*** optsptr, char* toadd) {
  * check_connect returns true only if the connection to the address given suceeds AND the username and password are valid
  * In essence, this function can be used to check if an rdp connection will succeed
  */
-bool check_connect(char* fip, char* fuser, char* fpass) {
+bool check_connect(char* erdp, char* fip, char* fuser, char* fpass) {
+	int i;
 	pid_t childpid;
 	int retval;
 	int pipes[2];
@@ -79,35 +83,34 @@ bool check_connect(char* fip, char* fuser, char* fpass) {
 
 	char **args = malloc(sizeof(char *));
 	args[0] = NULL;
-	args = add_opt(&args, find_executable("xfreerdp"));
+	args = add_opt(&args, "");
 	args = add_opt(&args, "/auth-only");
 	args = add_opt(&args, "/cert-ignore");
 	args = add_opt(&args, fip);
 	args = add_opt(&args, fuser);
 	args = add_opt(&args, fpass);
 
-	childpid = fork();
+	printf("Checking connection with: %s ", erdp);
+	for(i=0;args[i] != NULL;i++) {
+		if(strncmp(args[i], "/p:", 3) == 0) {
+			printf("/p:**** ");
+			continue;
+		}
+		printf("%s ", args[i]);
+	}
+	printf("\n");
 
+	childpid = fork();
 	if(childpid == 0) {
-		/*connect STDOUT to our pipe, so our parent can read the output*/
-		dup2(pipes[1], STDOUT_FILENO);
-		close(pipes[0]);
-		close(pipes[1]);
 		/*child execs freerdp with the auth-only argument*/
-		execv(find_executable("xfreerdp"), args);
+		execvp(erdp, args);
 		return false;
 
 	}
-	/*parent waits for the child to return and checks the stdout output of xfreerdp. We can't simply use the return value because xfreerdp doesn't propery set it. Instead we are looking for the last outputted character to see if it is a zero (success) or a one (failure). This method, while hacky, actually works.*/
+	/*parent waits for the child to return and checks the return value*/
 	wait(&retval);
-	char buf[4096];
-	memset(buf, '\0', 4096);
-	fcntl(pipes[0], F_SETFL, O_NONBLOCK);
-	read(pipes[0], buf, sizeof(buf));
-	printf("%s", buf);
-	int i;
-	for(i=0;buf[i] != '\0'; i++) {}
-	if(buf[i-2] == '0') {
+	printf("\nRetval: %d\n", retval);
+	if(retval == 0) {
 		return true;
 	}
 	return false;
